@@ -52,6 +52,25 @@ class AuthController extends Controller
             'user' =>   $user,
         ]);
     }
+    // This function verifies if the email is not registered in the database
+
+    public function verifyEmail(Request $request)
+    {
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        if ($user) {
+            return response()->json(['message' => 'Email already registered'], 401);
+        }
+    }
+
+    public function verifyUsername(Request $request)
+    {
+        $user = User::where('username', $request->username)->firstOrFail();
+
+        if ($user) {
+            return response()->json(['message' => 'Username already registered'], 401);
+        }
+    }
 
     // public function logout(Request $request)
     // {
