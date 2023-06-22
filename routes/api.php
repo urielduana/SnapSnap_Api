@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 
@@ -20,11 +23,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Get posts (Ruta publica)
-Route::get('posts', [PostController::class, 'index']);
+Route::post('sactum/token', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+        'device_name' => 'required',
+    ]);
 
-//Get post (Ruta privada)
-Route::post('register', [AuthController::class, 'register']);
+    $user = User::where('email', $request->email)->first();
 
-//Get post (Ruta privada)
-Route::post('login', [AuthController::class, 'login']);
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect'],
+        ]);
+    }
+
+    return $user->createToken($request->device_name)->plainTextToken;
+});
+
+Route::middleware('auth:sanctum')->get('/user/revoke', function (Request $request) {
+    $user = $request->user();
+    $user->tokens()->delete();
+    return response()->json([
+        'message' => 'Tokens Revoked'
+    ]);
+});
