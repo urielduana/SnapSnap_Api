@@ -23,14 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->get('/user/revoke', function (Request $request) {
-    $user = $request->user();
-    $user->tokens()->delete();
-    return response()->json([
-        'message' => 'Tokens Revoked'
-    ]);
-});
-
 Route::post('sactum/token', function (Request $request) {
     $request->validate([
         'email' => 'required|email',
@@ -47,4 +39,12 @@ Route::post('sactum/token', function (Request $request) {
     }
 
     return $user->createToken($request->device_name)->plainTextToken;
+});
+
+Route::middleware('auth:sanctum')->get('/user/revoke', function (Request $request) {
+    $user = $request->user();
+    $user->tokens()->delete();
+    return response()->json([
+        'message' => 'Tokens Revoked'
+    ]);
 });
