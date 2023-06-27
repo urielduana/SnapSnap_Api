@@ -18,7 +18,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Ruta de hola produccion
-Route::get('/hola', function () {
-    return "Hola produccion";
-});
+Route::get('/getuser', [UserController::class, 'index']);
