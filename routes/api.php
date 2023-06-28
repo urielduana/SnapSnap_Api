@@ -41,10 +41,14 @@ Route::post('sactum/token', function (Request $request) {
     return $user->createToken($request->device_name)->plainTextToken;
 });
 
-Route::middleware('auth:sanctum')->get('/user/revoke', function (Request $request) {
+Route::middleware('auth:sanctum')->get('user/revoke', function (Request $request) {
     $user = $request->user();
     $user->tokens()->delete();
     return response()->json([
         'message' => 'Tokens Revoked'
     ]);
 });
+
+Route::post('verifyEmail', [AuthController::class, 'verifyEmail']);
+//Register
+Route::post('register', [AuthController::class, 'register']);

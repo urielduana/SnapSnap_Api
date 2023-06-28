@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'username' => 'required',
             'email' => 'required|email',
             'password' => 'required',
         ]);
@@ -25,9 +25,10 @@ class AuthController extends Controller
         };
 
         $user = User::create([
-            'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($request->email))),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -52,29 +53,31 @@ class AuthController extends Controller
             'user' =>   $user,
         ]);
     }
-    // This function verifies if the email is not registered in the database
 
     public function verifyEmail(Request $request)
     {
-        $user = User::where('email', $request->email)->firstOrFail();
-
-        if ($user) {
-            return response()->json(['message' => 'Email already registered'], 401);
+        if ($request->email == null) {
+            return response()->json(['message' => 'Email is required'], 401);
+        }
+        try {
+            $user = User::where('email', $request->email)->firstOrFail();
+            if ($user) {
+                return response()->json(['message' => 'Email already registered'], 401);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Email available'], 200);
         }
     }
 
     public function verifyUsername(Request $request)
     {
-        $user = User::where('username', $request->username)->firstOrFail();
-
-        if ($user) {
-            return response()->json(['message' => 'Username already registered'], 401);
+        try {
+            $user = User::where('name', $request->name)->firstOrFail();
+            if ($user) {
+                return response()->json(['message' => 'Username already registered'], 401);
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Username available'], 200);
         }
     }
-
-    // public function logout(Request $request)
-    // {
-    //     auth()->user()->tokens()->delete();
-    //     return response()->json(['message' => 'Logged out']);
-    // }
 }
