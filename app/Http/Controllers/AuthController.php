@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'username' => 'required',
             'email' => 'required|email',
             'password' => 'required',
         ]);
@@ -25,9 +25,10 @@ class AuthController extends Controller
         };
 
         $user = User::create([
-            'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($request->email))),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
