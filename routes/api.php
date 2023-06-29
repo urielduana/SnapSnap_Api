@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
+use App\Models\Post;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,7 @@ Route::post('sactum/token', function (Request $request) {
 
     $user = User::where('email', $request->email)->first();
 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
+    if (!$user || !Hash::check($request->password, $user->password)) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect'],
         ]);
@@ -52,3 +53,17 @@ Route::middleware('auth:sanctum')->get('user/revoke', function (Request $request
 Route::post('verifyEmail', [AuthController::class, 'verifyEmail']);
 //Register
 Route::post('register', [AuthController::class, 'register']);
+
+/* 
+##### Post Routes ########
+//muestra el form
+Route::get('posts', [PostController::class, 'index']);
+//guarda el post
+Route::post('postsnew', [PostController::class, 'store']);
+ */
+
+//Grupos
+Route::controller(PostController::class)->group(function(){
+    Route::get('posts', [PostController::class, 'index']);
+    Route::post('posts', [PostController::class, 'store']);
+});
