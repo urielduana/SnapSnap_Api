@@ -3,14 +3,21 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Console\Concerns\InteractsWithIO;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class User extends Authenticatable
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+
+class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -53,5 +60,12 @@ class User extends Authenticatable
     public function getAvatarAttribute()
     {
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email)));
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+              ->width(50)
+              ->height(50);
     }
 }

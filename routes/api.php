@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
+use App\Models\Post;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,7 @@ Route::post('sactum/token', function (Request $request) {
 
     $user = User::where('email', $request->email)->first();
 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
+    if (!$user || !Hash::check($request->password, $user->password)) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect'],
         ]);
@@ -54,3 +55,6 @@ Route::post('register/username', [AuthController::class, 'verifyUsername']);
 //Register
 Route::post('register', [AuthController::class, 'register']);
 
+
+Route::get('posts', [PostController::class, 'index']);
+Route::post('img', [PostController::class, 'store']);
