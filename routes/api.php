@@ -63,7 +63,7 @@ Route::post('postsnew', [PostController::class, 'store']);
  */
 
 //Grupos
-Route::controller(PostController::class)->group(function(){
-    Route::get('posts', [PostController::class, 'index']);
-    Route::post('posts', [PostController::class, 'store']);
-});
+Route::get('posts', [PostController::class, 'index']);
+Route::post('img', [PostController::class, 'store']);
+/* Route::controller(PostController::class)->group(function(){ */
+/* }); */
