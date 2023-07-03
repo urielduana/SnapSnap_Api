@@ -69,7 +69,7 @@ class AuthController extends Controller
         }
     }
 
-    public function verifyUsername(Request $request)
+       public function verifyUsername(Request $request)
     {
         if ($request->username == null) {
             return response()->json(['message' => 'Username is required'], 401);
