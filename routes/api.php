@@ -49,7 +49,6 @@ Route::middleware('auth:sanctum')->get('user/revoke', function (Request $request
     ]);
 });
 
-
 Route::post('register/email', [AuthController::class, 'verifyEmail']);
 Route::post('register/username', [AuthController::class, 'verifyUsername']);
 //Register
