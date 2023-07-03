@@ -50,20 +50,11 @@ Route::middleware('auth:sanctum')->get('user/revoke', function (Request $request
     ]);
 });
 
-Route::post('verifyEmail', [AuthController::class, 'verifyEmail']);
+Route::post('register/email', [AuthController::class, 'verifyEmail']);
+Route::post('register/username', [AuthController::class, 'verifyUsername']);
 //Register
 Route::post('register', [AuthController::class, 'register']);
 
-/* 
-##### Post Routes ########
-//muestra el form
-Route::get('posts', [PostController::class, 'index']);
-//guarda el post
-Route::post('postsnew', [PostController::class, 'store']);
- */
 
-//Grupos
 Route::get('posts', [PostController::class, 'index']);
 Route::post('img', [PostController::class, 'store']);
-/* Route::controller(PostController::class)->group(function(){ */
-/* }); */
