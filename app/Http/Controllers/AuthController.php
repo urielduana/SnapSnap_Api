@@ -69,10 +69,13 @@ class AuthController extends Controller
         }
     }
 
-    public function verifyUsername(Request $request)
+       public function verifyUsername(Request $request)
     {
+        if ($request->username == null) {
+            return response()->json(['message' => 'Username is required'], 401);
+        }
         try {
-            $user = User::where('name', $request->name)->firstOrFail();
+            $user = User::where('username', $request->username)->firstOrFail();
             if ($user) {
                 return response()->json(['message' => 'Username already registered'], 401);
             }
