@@ -31,14 +31,16 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'email'],
-            'password' => ['required']
+            'password' => ['required'],
+            'device_name' => ['required']
         ]);
+
         $user = User::where('email', $request->email)->first();
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'The credentials you entered are incorrect. Please try again'], 401);
         }
-        $token = $user->createToken($request->device_name)->plainTextToken;
-        return response()->json(['token' => $token], 200);
+        return $user->createToken($request->device_name)->plainTextToken;
     }
 
     public function logout(Request $request)
@@ -48,7 +50,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Tokens Revoked'
         ]);
-    }
+    }   
 
     public function verifyEmail(Request $request)
     {
