@@ -1,0 +1,2 @@
+docker run --name snapsnap_api -v /home/admin/db/vol:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=snapsnap_api -d -p 3306:3306 mysql:latest
+
