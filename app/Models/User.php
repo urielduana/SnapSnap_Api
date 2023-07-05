@@ -53,15 +53,6 @@ class User extends Authenticatable implements HasMedia
         'password' => 'hashed',
     ];
 
-    protected $appends = [
-        'avatar',
-    ];
-
-    public function getAvatarAttribute()
-    {
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email)));
-    }
-
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
