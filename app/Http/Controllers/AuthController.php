@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -9,47 +10,43 @@ use \stdClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+
 class AuthController extends Controller
 {
     //
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'username' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        };
-
-        $user = User::create([
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'avatar' => 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($request->email))),
-        ]);
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
+        $user = new User();
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->bio = $request->bio;
+        $user->password = Hash::make($request->password);
+        $user->save();
+        return response()->json(['message' => 'User created successfully'], 200);
     }
 
     public function login(Request $request)
     {
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Invalid login'], 401);
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'The credentials you entered are incorrect. Please try again'], 401);
         }
+        $token = $user->createToken($request->device_name)->plainTextToken;
+        return response()->json(['token' => $token], 200);
+    }
 
-        $user = User::where('email', $request->email)->firstOrFail();
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+        $user->tokens()->delete();
         return response()->json([
-            'message' => 'Hola ' . $user->name,
-            'accesToken' => $token,
-            'tokenType' => 'Bearer',
-            'user' =>   $user,
+            'message' => 'Tokens Revoked'
         ]);
     }
 
@@ -68,7 +65,7 @@ class AuthController extends Controller
         }
     }
 
-       public function verifyUsername(Request $request)
+    public function verifyUsername(Request $request)
     {
         if ($request->username == null) {
             return response()->json(['message' => 'Username is required'], 401);

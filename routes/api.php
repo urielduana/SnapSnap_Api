@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
-use App\Models\Post;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,37 +23,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('sactum/token', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        'device_name' => 'required',
-    ]);
+// Login and Logout
+Route::post('sanctum/token', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->get('user/revoke', [AuthController::class, 'logout']);
 
-    $user = User::where('email', $request->email)->first();
-
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect'],
-        ]);
-    }
-
-    return $user->createToken($request->device_name)->plainTextToken;
-});
-
-Route::middleware('auth:sanctum')->get('user/revoke', function (Request $request) {
-    $user = $request->user();
-    $user->tokens()->delete();
-    return response()->json([
-        'message' => 'Tokens Revoked'
-    ]);
-});
-
+// Register
+Route::post('register', [AuthController::class, 'register']);
 Route::post('register/email', [AuthController::class, 'verifyEmail']);
 Route::post('register/username', [AuthController::class, 'verifyUsername']);
-//Register
-Route::post('register', [AuthController::class, 'register']);
 
-
+// Test
 Route::get('posts', [PostController::class, 'index']);
 Route::post('img', [PostController::class, 'store']);
