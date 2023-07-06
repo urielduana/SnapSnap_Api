@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         if ($request->hasFile('profile_photo')) {
             try {
-                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3');
+                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo');
                 return response()->json(['message' => 'User created successfully with profile photo'], 200);
             } catch (\Throwable $th) {
                 return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
