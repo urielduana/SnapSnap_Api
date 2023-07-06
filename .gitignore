@@ -20,3 +20,4 @@ yarn-error.log
 /.vscode
 Snap.pem
 resources/views/posts.blade.php
+/storage/media-library
