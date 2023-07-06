@@ -24,7 +24,19 @@ class AuthController extends Controller
         $user->bio = $request->bio;
         $user->password = Hash::make($request->password);
         $user->save();
-        return response()->json(['message' => 'User created successfully'], 200);
+
+        if ($request->hasFile('profile_photo')) {
+
+            try{
+                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo');
+                return response()->json(['message' => 'User created successfully with profile photo'], 200);
+            }catch(\Throwable $th){
+                return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
+            }
+        }else{
+            return response()->json(['message' => 'User created successfully'], 200);
+        }
+
     }
 
     public function login(Request $request)
