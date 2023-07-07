@@ -97,7 +97,8 @@ class AuthController extends Controller
         $user = User::find($id);
         $profile_photo = $user->getMedia('profile_photo')->last();
         if ($profile_photo) {
-            return $profile_photo->getFullUrl();
+            // Return the full url of the profile photo json
+            return response()->json(['profile_photo' => $profile_photo->getFullUrl()], 200);
         } else {
             return null;
         }
