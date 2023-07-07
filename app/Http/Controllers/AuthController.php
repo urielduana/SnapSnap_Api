@@ -91,18 +91,16 @@ class AuthController extends Controller
             return response()->json(['message' => 'Username available'], 200);
         }
     }
-    // Controller that return the last spatie media url of a user id
-    public function getProfilePhoto($id)
-    {
-        $user = User::find($id);
-        $profile_photo = $user->getMedia('profile_photo')->last();
-        if ($profile_photo) {
-            // Return the full url of the profile photo json
-            return response()->json(['profile_photo' => $profile_photo->getFullUrl()], 200);
-        } else {
-            return null;
-        }
+   // Returns last media of the user giving the sanctum token
+   
+   public function getProfilePhoto(Request $request){
+    $user = $request->user();
+    $media = $user->getMedia('profile_photo')->last();
+    if($media){
+        $media->url = $media->getUrl();
+        return response()->json(['message' => 'Profile photo found', 'media' => $media], 200);
+    }else{
+        return response()->json(['message' => 'Profile photo not found'], 404);
     }
-
-    
+   }
 }
