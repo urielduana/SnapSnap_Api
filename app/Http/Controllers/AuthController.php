@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         if ($request->hasFile('profile_photo')) {
             try {
-                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo');
+                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3');
                 return response()->json(['message' => 'User created successfully with profile photo'], 200);
             } catch (\Throwable $th) {
                 return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
@@ -91,4 +91,16 @@ class AuthController extends Controller
             return response()->json(['message' => 'Username available'], 200);
         }
     }
+   // Returns last media of the user giving the sanctum token
+   
+   public function getProfilePhoto(Request $request){
+    $user = $request->user();
+    $media = $user->getMedia('profile_photo')->last();
+    if($media){
+        $media->url = $media->getUrl();
+        return response()->json(['message' => 'Profile photo found', 'data' => $media], 200);
+    }else{
+        return response()->json(['message' => 'Profile photo not found'], 404);
+    }
+   }
 }
