@@ -36,4 +36,4 @@ Route::post('register/username', [AuthController::class, 'verifyUsername']);
 Route::get('posts', [PostController::class, 'index']);
 Route::post('img', [PostController::class, 'store']);
 // getProfilePhoto
-Route::middleware('auth:sanctum')->get('profile_photo/', [PostController::class, 'getProfilePhoto']);
+Route::middleware('auth:sanctum')->get('profile_photo/', [AuthController::class, 'getProfilePhoto']);
