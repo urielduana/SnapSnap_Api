@@ -31,11 +31,11 @@ class AuthController extends Controller
                 return response()->json(['message' => 'User created successfully with profile photo'], 200);
             } catch (\Throwable $th) {
                 // Create profile photo using gravatar api
-                $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))) . '?s=200&d=mp')->toMediaCollection('profile_photo', 's3');
+                $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
                 return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
             }
         } else {
-            $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))) . '?s=200&d=mp')->toMediaCollection('profile_photo', 's3');
+            $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
             return response()->json(['message' => 'User created successfully'], 200);
         }
     }
