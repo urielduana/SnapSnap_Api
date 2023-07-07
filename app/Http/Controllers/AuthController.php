@@ -101,7 +101,8 @@ class AuthController extends Controller
     $media = $user->getMedia('profile_photo')->last();
     if($media){
         $media->url = $media->getUrl();
-        return response()->json(['message' => 'Profile photo found', 'data' => $media], 200);
+        // return response()->json(['message' => 'Profile photo found', 'data' => $media], 200);
+        return $media;
     }else{
         return response()->json(['message' => 'Profile photo not found'], 404);
     }
