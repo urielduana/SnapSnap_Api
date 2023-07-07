@@ -91,4 +91,17 @@ class AuthController extends Controller
             return response()->json(['message' => 'Username available'], 200);
         }
     }
+    // Controller that return the last spatie media url of a user id
+    public function getProfilePhoto($id)
+    {
+        $user = User::find($id);
+        $profile_photo = $user->getMedia('profile_photo')->last();
+        if ($profile_photo) {
+            return $profile_photo->getFullUrl();
+        } else {
+            return null;
+        }
+    }
+
+    
 }

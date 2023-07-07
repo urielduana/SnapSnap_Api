@@ -35,3 +35,5 @@ Route::post('register/username', [AuthController::class, 'verifyUsername']);
 // Test
 Route::get('posts', [PostController::class, 'index']);
 Route::post('img', [PostController::class, 'store']);
+// GetProfilePhoto
+Route::get('profile_photo/{id}', [AuthController::class, 'getProfilePhoto']);
