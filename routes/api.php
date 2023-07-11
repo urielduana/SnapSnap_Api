@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\FavoriteTagController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,3 +37,5 @@ Route::get('posts', [PostController::class, 'index']);
 Route::post('img', [PostController::class, 'store']);
 // getProfilePhoto
 Route::middleware('auth:sanctum')->get('profile_photo/', [AuthController::class, 'getProfilePhoto']);
+
+Route::post('/tags', [FavoriteTagController::class, 'store']);

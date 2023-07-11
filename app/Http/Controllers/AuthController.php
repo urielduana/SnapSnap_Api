@@ -30,9 +30,12 @@ class AuthController extends Controller
                 $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3');
                 return response()->json(['message' => 'User created successfully with profile photo'], 200);
             } catch (\Throwable $th) {
+                // Create profile photo using gravatar api
+                $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
                 return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
             }
         } else {
+            $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
             return response()->json(['message' => 'User created successfully'], 200);
         }
     }
@@ -98,7 +101,8 @@ class AuthController extends Controller
     $media = $user->getMedia('profile_photo')->last();
     if($media){
         $media->url = $media->getUrl();
-        return response()->json(['message' => 'Profile photo found', 'data' => $media], 200);
+        // return response()->json(['message' => 'Profile photo found', 'data' => $media], 200);
+        return $media;
     }else{
         return response()->json(['message' => 'Profile photo not found'], 404);
     }
