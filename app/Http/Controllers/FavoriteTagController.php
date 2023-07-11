@@ -12,7 +12,7 @@ class FavoriteTagController extends Controller
      */
     public function index()
     {
-        //
+    
     }
 
     /**
@@ -28,7 +28,14 @@ class FavoriteTagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $tags = $request->json()->all();
+        foreach ($tags as $tag){
+            FavoriteTag::create([
+                'user_id'=>1,
+                'tag_id'=>$tag['id'],
+            ]);
+        }
+        return response()->json(['message' => 'Tags guardados correctamente', 'tags' => $tags]);
     }
 
     /**
