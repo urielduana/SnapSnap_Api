@@ -14,30 +14,39 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     //
-    public function register(UserRequest $request)
+    public function register(Request $request)
     {
         $user = new User();
-        $user->name = $request->name;
-        $user->phone = $request->phone;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->bio = $request->bio;
         $user->password = Hash::make($request->password);
+        if ($request->has('name')) {
+            $user->name = $request->name;
+        }
+        if ($request->has('phone')) {
+            $user->phone = $request->phone;
+        }
+        if ($request->has('bio')) {
+            $user->bio = $request->bio;
+        }
         $user->save();
 
-        if ($request->hasFile('profile_photo')) {
-            try {
-                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3');
-                return response()->json(['message' => 'User created successfully with profile photo'], 200);
-            } catch (\Throwable $th) {
-                // Create profile photo using gravatar api
-                $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
-                return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
-            }
-        } else {
-            $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
-            return response()->json(['message' => 'User created successfully'], 200);
-        }
+        // Return user token
+        return $user->createToken($request->device_name)->plainTextToken;
+
+        // if ($request->hasFile('profile_photo')) {
+        //     try {
+        //         $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3');
+        //         return response()->json(['message' => 'User created successfully with profile photo'], 200);
+        //     } catch (\Throwable $th) {
+        //         // Create profile photo using gravatar api
+        //         $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
+        //         return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
+        //     }
+        // } else {
+        //     $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
+        //     return response()->json(['message' => 'User created successfully'], 200);
+        // }
     }
 
     public function login(Request $request)
