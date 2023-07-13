@@ -37,6 +37,8 @@ class AuthController extends Controller
         $favoriteTags->user_id = $user->id;
         $favoriteTags->tag_id = 1;
         $favoriteTags->save();
+        $favoriteTags = new FavoriteTag();
+        $favoriteTags->user_id = $user->id;
         $favoriteTags->tag_id = 2;
         $favoriteTags->save();
         // Return user token
