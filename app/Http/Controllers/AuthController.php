@@ -32,7 +32,7 @@ class AuthController extends Controller
         $user->save();
 
         // Return user token
-        return $user;
+        return $user->createToken($request->device_name)->plainTextToken;
 
         // if ($request->hasFile('profile_photo')) {
         //     try {
