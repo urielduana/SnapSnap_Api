@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     //
-    public function register(UserRequest $request)
+    public function register(Request $request)
     {
         $user = new User();
         $user->name = $request->name;

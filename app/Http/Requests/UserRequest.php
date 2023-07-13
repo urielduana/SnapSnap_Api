@@ -22,11 +22,11 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string'],
-            'phone' => ['numeric', 'min_digits:10', 'unique:users'],
+            'name' => ['nullable','string'],
+            'phone' => ['nullable','numeric', 'min_digits:10', 'unique:users'],
             'username' => ['required', 'string', 'unique:users'],
             'email' => ['required', 'email', 'unique:users'],
-            'bio' => ['string'],
+            //'bio' => ['string'],
             'password' => ['required', 'string'],            
         ];
     }
