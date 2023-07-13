@@ -17,12 +17,18 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $user = new User();
-        $user->name = $request->name;
-        $user->phone = $request->phone;
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->bio = $request->bio;
         $user->password = Hash::make($request->password);
+        if ($request->has('name')) {
+            $user->name = $request->name;
+        }
+        if ($request->has('phone')) {
+            $user->phone = $request->phone;
+        }
+        if ($request->has('bio')) {
+            $user->bio = $request->bio;
+        }
         $user->save();
 
         // Return user token
