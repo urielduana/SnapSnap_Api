@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\FavoriteTag;
 use \stdClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -31,6 +32,13 @@ class AuthController extends Controller
         }
         $user->save();
 
+        // Give default favorite tags to user id  1 and 2
+        $favoriteTags = new FavoriteTag();
+        $favoriteTags->user_id = $user->id;
+        $favoriteTags->tag_id = 1;
+        $favoriteTags->save();
+        $favoriteTags->tag_id = 2;
+        $favoriteTags->save();
         // Return user token
         return $user->createToken($request->device_name)->plainTextToken;
 
@@ -103,17 +111,18 @@ class AuthController extends Controller
             return response()->json(['message' => 'Username available'], 200);
         }
     }
-   // Returns last media of the user giving the sanctum token
-   
-   public function getProfilePhoto(Request $request){
-    $user = $request->user();
-    $media = $user->getMedia('profile_photo')->last();
-    if($media){
-        $media->url = $media->getUrl();
-        // return response()->json(['message' => 'Profile photo found', 'data' => $media], 200);
-        return $media;
-    }else{
-        return response()->json(['message' => 'Profile photo not found'], 404);
+    // Returns last media of the user giving the sanctum token
+
+    public function getProfilePhoto(Request $request)
+    {
+        $user = $request->user();
+        $media = $user->getMedia('profile_photo')->last();
+        if ($media) {
+            $media->url = $media->getUrl();
+            // return response()->json(['message' => 'Profile photo found', 'data' => $media], 200);
+            return $media;
+        } else {
+            return response()->json(['message' => 'Profile photo not found'], 404);
+        }
     }
-   }
 }
