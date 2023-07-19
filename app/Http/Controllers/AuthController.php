@@ -59,6 +59,21 @@ class AuthController extends Controller
         // }
     }
 
+    public function uploadProfilePhoto(Request $request)
+    {
+        $user = $request->user();
+        if ($request->hasFile('profile_photo')) {
+            try {
+                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3/profile_photos');
+                return response()->json(['message' => 'Profile photo uploaded successfully'], 200);
+            } catch (\Throwable $th) {
+                return response()->json(['message' => 'Profile photo not uploaded'], 500);
+            }
+        } else {
+            return response()->json(['message' => 'Profile photo not uploaded'], 500);
+        }
+    }
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [

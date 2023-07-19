@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->get('user/revoke', [AuthController::class, 'l
 Route::post('register', [AuthController::class, 'register']);
 Route::post('register/email', [AuthController::class, 'verifyEmail']);
 Route::post('register/username', [AuthController::class, 'verifyUsername']);
+Route::post('register/profile_photo', [AuthController::class, 'uploadProfilePhoto']);
 
 // Test
 Route::get('posts', [PostController::class, 'index']);
