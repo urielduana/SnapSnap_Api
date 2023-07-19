@@ -61,7 +61,7 @@ class AuthController extends Controller
 
     public function uploadProfilePhoto(Request $request)
     {
-        $user = $request->user();
+        $user = $request->token->user();
         return($user);
         // if ($request->hasFile('profile_photo')) {
         //     try {
