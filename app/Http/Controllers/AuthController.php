@@ -43,36 +43,22 @@ class AuthController extends Controller
         $favoriteTags->save();
         // Return user token
         return $user->createToken($request->device_name)->plainTextToken;
-
-        // if ($request->hasFile('profile_photo')) {
-        //     try {
-        //         $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3');
-        //         return response()->json(['message' => 'User created successfully with profile photo'], 200);
-        //     } catch (\Throwable $th) {
-        //         // Create profile photo using gravatar api
-        //         $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
-        //         return response()->json(['message' => 'User created successfully but profile photo not uploaded'], 200);
-        //     }
-        // } else {
-        //     $user->addMediaFromUrl('https://www.gravatar.com/avatar/' . md5(strtolower(trim($user->email))))->toMediaCollection('profile_photo', 's3');
-        //     return response()->json(['message' => 'User created successfully'], 200);
-        // }
     }
 
     public function uploadProfilePhoto(Request $request)
     {
-        $user = $request->token->user();
-        return($user);
-        // if ($request->hasFile('profile_photo')) {
-        //     try {
-        //         $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3/profile_photos');
-        //         return response()->json(['message' => 'Profile photo uploaded successfully'], 200);
-        //     } catch (\Throwable $th) {
-        //         return response()->json(['message' => 'Profile photo not uploaded try catch error'], 500);
-        //     }
-        // } else {
-        //     return response()->json(['message' => 'Profile photo not uploaded'], 500);
-        // }
+        $user = $request->user();
+        return $user;
+        if ($request->hasFile('profile_photo')) {
+            try {
+                $user->addMediaFromRequest('profile_photo')->toMediaCollection('profile_photo', 's3/profile_photos');
+                return response()->json(['message' => 'Profile photo uploaded successfully'], 200);
+            } catch (\Throwable $th) {
+                return response()->json(['message' => 'Profile photo not uploaded try catch error'], 500);
+            }
+        } else {
+            return response()->json(['message' => 'Profile photo not uploaded'], 500);
+        }
     }
 
     public function login(Request $request)
