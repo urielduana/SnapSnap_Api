@@ -36,7 +36,7 @@ Route::post('register/username', [AuthController::class, 'verifyUsername']);
 Route::middleware('auth:sanctum')->post('register/profile_photo', [AuthController::class, 'uploadProfilePhoto']);
 
 // Tags
-Route::middleware('auth:sanctum')->get('tags', [TagsController::class, 'index']);
+Route::middleware('auth:sanctum')->resource('tags', TagsController::class);
 
 
 // Test
