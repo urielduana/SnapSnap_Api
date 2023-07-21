@@ -33,6 +33,10 @@ Route::post('register/email', [AuthController::class, 'verifyEmail']);
 Route::post('register/username', [AuthController::class, 'verifyUsername']);
 Route::middleware('auth:sanctum')->post('register/profile_photo', [AuthController::class, 'uploadProfilePhoto']);
 
+// Tags
+Route::get('tags', [TagsController::class, 'index']);
+
+
 // Test
 Route::get('posts', [PostController::class, 'index']);
 Route::post('img', [PostController::class, 'store']);

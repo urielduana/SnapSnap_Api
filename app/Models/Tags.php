@@ -11,11 +11,11 @@ class Tags extends Model
 
     protected $fillable = [
         'tag_name',
+        'color',
     ];
 
     public function posts()
     {
         return $this->hasMany(Post::class);
     }
-
 }
