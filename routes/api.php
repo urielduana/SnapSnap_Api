@@ -8,6 +8,8 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FavoriteTagController;
+use App\Http\Controllers\TagsController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,7 +36,7 @@ Route::post('register/username', [AuthController::class, 'verifyUsername']);
 Route::middleware('auth:sanctum')->post('register/profile_photo', [AuthController::class, 'uploadProfilePhoto']);
 
 // Tags
-Route::get('tags/index', [TagsController::class, 'index']);
+Route::middleware('auth:sanctum')->get('tags', [TagsController::class, 'index']);
 
 
 // Test
