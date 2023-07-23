@@ -59,4 +59,9 @@ class User extends Authenticatable implements HasMedia
               ->width(50)
               ->height(50);
     }
+
+    public function favoriteTags()
+    {
+        return $this->hasMany(FavoriteTag::class);
+    }
 }
