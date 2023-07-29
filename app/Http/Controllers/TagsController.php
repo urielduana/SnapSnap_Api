@@ -15,7 +15,7 @@ class TagsController extends Controller
     {
         // This controller that are not registered like favorite tags from user
         $tags = Tags::all();
-        $favoriteTags = User::favoriteTags();
+        $favoriteTags = auth()->user()->favoriteTags()->get();
         return response()->json([
             'tags' => $tags,
             'favoriteTags' => $favoriteTags,
