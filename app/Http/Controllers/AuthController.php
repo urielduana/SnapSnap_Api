@@ -41,6 +41,17 @@ class AuthController extends Controller
         $favoriteTags->user_id = $user->id;
         $favoriteTags->tag_id = 2;
         $favoriteTags->save();
+
+        // Generate Default Profile Photo
+        $randomBackgroundColor = substr(md5(rand()), 0, 6);
+        $randomTextColor = substr(md5(rand()), 0, 6);
+
+        try {
+            $user->addMediaFromUrl('https://ui-avatars.com/api/?name=' . $user->username . '&background=' . $randomBackgroundColor . '&color=' . $randomTextColor)->toMediaCollection('profile_photo', 's3');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         // Return user token
         return $user->createToken($request->device_name)->plainTextToken;
     }

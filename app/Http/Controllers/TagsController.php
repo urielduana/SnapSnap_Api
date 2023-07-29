@@ -14,7 +14,7 @@ class TagsController extends Controller
     {
         $user = auth()->user();
         $tags = $user->favoriteTags;
-        return response()->json($tags);
+        return substr(md5(rand()), 0, 6);
     }
 
     /**
