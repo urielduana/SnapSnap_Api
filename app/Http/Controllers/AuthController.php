@@ -42,12 +42,8 @@ class AuthController extends Controller
         $favoriteTags->tag_id = 2;
         $favoriteTags->save();
 
-        // Generate Default Profile Photo
-        $randomBackgroundColor = substr(md5(rand()), 0, 6);
-        $randomTextColor = substr(md5(rand()), 0, 6);
-
         try {
-            $user->addMediaFromUrl('https://ui-avatars.com/api/?name=' . $user->username . '&background=' . $randomBackgroundColor . '&color=' . $randomTextColor)->toMediaCollection('profile_photo', 's3');
+            $user->addMediaFromUrl('https://ui-avatars.com/api/?name=' . $user->name . '&color=random&background=random')->toMediaCollection('profile_photo', 's3');
         } catch (\Throwable $th) {
             //throw $th;
         }
