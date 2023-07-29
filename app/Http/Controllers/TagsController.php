@@ -13,7 +13,8 @@ class TagsController extends Controller
     public function index()
     {
         $user = auth()->user();
-        return $user;
+        $tags = $user->favoriteTags;
+        return response()->json($tags);
     }
 
     /**
