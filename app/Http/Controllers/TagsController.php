@@ -12,7 +12,8 @@ class TagsController extends Controller
      */
     public function index()
     {
-        return Tags::all();
+        $user = auth()->user();
+        return $user;
     }
 
     /**
