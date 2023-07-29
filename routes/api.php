@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->resource('tags', TagsController::class);
 
 // Test
 Route::get('posts', [PostController::class, 'index']);
-Route::post('img', [PostController::class, 'store']);
+Route::post('img', [PostController::class, 'store'])->middleware('auth:sanctum');
 // getProfilePhoto
 Route::middleware('auth:sanctum')->get('profile_photo/', [AuthController::class, 'getProfilePhoto']);
 

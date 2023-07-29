@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -33,42 +34,17 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //Usando spatie y aws s3
-        try {
-            $folder = 'images';
 
-            // info user auth
-            $user = auth()->user();
-            
-            $image_url = Storage::disk('s3')->put($folder, $request->image, 'public');
+public function store(Request $request)
+{
+    $user = Auth::user();
 
-            $post = Post::create([
-                'description' => $request->description,
-                //'user_id' => $user->id, -> esto es para cuando tengamos el login
-                //'tag_id' => $request->tag_id, -> esto es para cuando tengamos el login
-                'user_id' => 1,
-                'tag_id' => 1,
-                'image_url' => $image_url
-            ]);
-
-
-            $post->save();
-
-            if (isset($request['image'])) {
-                $post->addMediaFromRequest('image')->toMediaCollection('posts');
-            }
-
-            return response()->json([
-                'message' => 'Post creado correctamente'
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al crear el post', $e
-            ], 500);
-        }
+    if (!$user) {
+        return response()->json(['error' => 'Usuario no autenticado'], 401);
     }
+
+    return response()->json(['user' => $user], 200);
+}
 
     public function avatar(Request $request){
           try {
