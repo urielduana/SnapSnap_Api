@@ -15,8 +15,19 @@ class TagsController extends Controller
     {
         // Return all favorite tags for the current user
         $authUser = User::find(auth()->user()->id);
-        $tags = $authUser->favoriteTags()->get();
-        return response()->json($tags);
+        $authFavoriteTags = $authUser->favoriteTags()->get();
+
+        // Get all Tags from FavoriteTag on a object
+        $tagsFavoriteTag = [];
+        foreach ($authFavoriteTags as $authFavoriteTag) {
+            // Search in Tag table for the id
+            $tag = Tags::find($authFavoriteTag->tag_id);
+            array_push($tagsFavoriteTag, $tag);
+        }
+
+        return response()->json([
+            'tags' => $tagsFavoriteTag,
+        ]);
     }
 
     /**
