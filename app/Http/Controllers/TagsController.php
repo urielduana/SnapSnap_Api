@@ -17,9 +17,11 @@ class TagsController extends Controller
         $tags = Tags::all();
         $auth = auth()->user();
         $favoriteTags = $auth->favoriteTags;
+        $notFavoriteTags = $tags->diff($favoriteTags);
         return response()->json([
-            'tags' => $tags,
-            'favoriteTags' => $favoriteTags,
+            'tags' => $tags->id,
+            'favoriteTags' => $favoriteTags->id,
+            'notFavoriteTags' => $notFavoriteTags->id,
         ]);
     }
 
