@@ -17,7 +17,7 @@ class TagsController extends Controller
         $notFavoriteTags = Tags::whereDoesntHave('userFavoriteTag', function ($query) use ($auth) {
             $query->where('user_id', $auth->id);
         })->get();
-        return $notFavoriteTags;
+        return response()->json($notFavoriteTags);
     }
 
     /**
