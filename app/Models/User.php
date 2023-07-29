@@ -64,9 +64,4 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(FavoriteTag::class);
     }
-
-    public function noFavoriteTags()
-    {
-        return $this->hasMany(NoFavoriteTag::class);
-    }
 }

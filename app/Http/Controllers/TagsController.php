@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tags;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class TagsController extends Controller
 {
@@ -12,9 +13,13 @@ class TagsController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        $tags = $user->favoriteTags;
-        return substr(md5(rand()), 0, 6);
+        // This controller that are not registered like favorite tags from user
+        $tags = Tags::all();
+        $favoriteTags = User::favoriteTags();
+        return response()->json([
+            'tags' => $tags,
+            'favoriteTags' => $favoriteTags,
+        ]);
     }
 
     /**
