@@ -14,14 +14,14 @@ class TagsController extends Controller
     public function index()
     {
         // This controller that are not registered like favorite tags from user
-        $tags = Tags::all();
+        $tags = Tags::all()->id;
         $auth = auth()->user();
-        $favoriteTags = $auth->favoriteTags;
-        $notFavoriteTags = $tags->diff($favoriteTags);
+        $favoriteTags = $auth->favoriteTags->id;
+        $notFavoriteTags = $tags->diff($favoriteTags)->id;
         return response()->json([
-            'tags' => $tags->id,
-            'favoriteTags' => $favoriteTags->id,
-            'notFavoriteTags' => $notFavoriteTags->id,
+            'tags' => $tags,
+            'favoriteTags' => $favoriteTags,
+            'notFavoriteTags' => $notFavoriteTags,
         ]);
     }
 
