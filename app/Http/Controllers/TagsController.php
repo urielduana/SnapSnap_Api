@@ -13,22 +13,7 @@ class TagsController extends Controller
      */
     public function index()
     {
-        // This function returns the info from Tags table of all the tags related to the current user that are favorite
-        // Needs this info to show the favorite tags for delete or edit the favorite tags of the user
-
-        // Return all favorite tags for the current user
-        $authUser = User::find(auth()->user()->id);
-        $authFavoriteTags = $authUser->favoriteTags()->get();
-
-        // Get all Tags from FavoriteTag on a object
-        $tagsFavoriteTag = [];
-        foreach ($authFavoriteTags as $authFavoriteTag) {
-            // Search in Tag table for the id
-            $tag = Tags::find($authFavoriteTag->tag_id);
-            array_push($tagsFavoriteTag, $tag);
-        }
-
-        return response()->json($tagsFavoriteTag);
+        return response()->json(Tags::all());
     }
 
     /**
@@ -36,27 +21,7 @@ class TagsController extends Controller
      */
     public function create()
     {
-        // This function returns the info from Tags table of all the tags related to the current user that are not favorite
-        // Needs this info to show the not favorite tags to add to the favorite tags of the user
-
-        // Return all favorite tags for the current user
-        $authUser = User::find(auth()->user()->id);
-        $authFavoriteTags = $authUser->favoriteTags()->get();
-        $tags = Tags::all();
-
-        // Get all Tags from FavoriteTag on a object
-        $tagsFavoriteTag = [];
-        foreach ($authFavoriteTags as $authFavoriteTag) {
-            // Search in Tag table for the id
-            $tag = Tags::find($authFavoriteTag->tag_id);
-            array_push($tagsFavoriteTag, $tag);
-        }
-
-        // Diferece between all tags and favorite tags
-
-        $tagsNotFavoriteTag = $tags->diff($tagsFavoriteTag);
-
-        return response()->json($tagsNotFavoriteTag);
+        //
     }
 
     /**
