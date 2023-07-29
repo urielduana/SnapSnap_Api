@@ -18,4 +18,9 @@ class Tags extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    public function userFavoriteTag()
+    {
+        return $this->hasMany(UserFavoriteTag::class);
+    }
 }
