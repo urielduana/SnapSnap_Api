@@ -13,7 +13,8 @@ class TagsController extends Controller
      */
     public function index()
     {
-        // This function returns the info from Tags table of all the tags related to the current user
+        // This function returns the info from Tags table of all the tags related to the current user that are favorite
+        // Needs this info to show the favorite tags for delete or edit the favorite tags of the user
 
         // Return all favorite tags for the current user
         $authUser = User::find(auth()->user()->id);
@@ -35,6 +36,9 @@ class TagsController extends Controller
      */
     public function create()
     {
+        // This function returns the info from Tags table of all the tags related to the current user that are not favorite
+        // Needs this info to show the not favorite tags to add to the favorite tags of the user
+
         // Return all favorite tags for the current user
         $authUser = User::find(auth()->user()->id);
         $authFavoriteTags = $authUser->favoriteTags()->get();
