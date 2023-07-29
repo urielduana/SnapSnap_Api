@@ -14,10 +14,11 @@ class TagsController extends Controller
     public function index()
     {
         $auth = auth()->user();
-        $notFavoriteTags = Tags::whereDoesntHave('userFavoriteTag', function ($query) use ($auth) {
-            $query->where('user_id', $auth->id);
-        })->get();
-        return response()->json($notFavoriteTags);
+        $tags = Tags::all();
+        $favoriteTagsId = $auth->userFavoriteTag->pluck('tag_id');
+        $favoriteTags = Tags::whereIn('id', $favoriteTagsId)->get();
+
+        return response()->json($favoriteTags);
     }
 
     /**
