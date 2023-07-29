@@ -13,6 +13,8 @@ class TagsController extends Controller
      */
     public function index()
     {
+        // This function returns the info from Tags table of all the tags related to the current user
+
         // Return all favorite tags for the current user
         $authUser = User::find(auth()->user()->id);
         $authFavoriteTags = $authUser->favoriteTags()->get();
@@ -25,9 +27,7 @@ class TagsController extends Controller
             array_push($tagsFavoriteTag, $tag);
         }
 
-        return response()->json([
-            'tags' => $tagsFavoriteTag,
-        ]);
+        return response()->json($tagsFavoriteTag);
     }
 
     /**
@@ -35,7 +35,24 @@ class TagsController extends Controller
      */
     public function create()
     {
-        //
+        // Return all favorite tags for the current user
+        $authUser = User::find(auth()->user()->id);
+        $authFavoriteTags = $authUser->favoriteTags()->get();
+        $tags = Tags::all();
+
+        // Get all Tags from FavoriteTag on a object
+        $tagsFavoriteTag = [];
+        foreach ($authFavoriteTags as $authFavoriteTag) {
+            // Search in Tag table for the id
+            $tag = Tags::find($authFavoriteTag->tag_id);
+            array_push($tagsFavoriteTag, $tag);
+        }
+
+        // Diferece between all tags and favorite tags
+
+        $tagsNotFavoriteTag = $tags->diff($tagsFavoriteTag);
+
+        return response()->json($tagsNotFavoriteTag);
     }
 
     /**
