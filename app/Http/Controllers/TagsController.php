@@ -13,10 +13,9 @@ class TagsController extends Controller
      */
     public function index()
     {
-        // Return all favorite tags for the current user
+        // Get all favorite tags for the current user
         $authUser = User::find(auth()->user()->id);
-        $tags = $authUser->favoriteTags()->get();
-        return response()->json($tags);
+        $userFavoriteTagsIds = $authUser->userFavoriteTag->pluck('id');
     }
 
     /**
