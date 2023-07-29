@@ -15,10 +15,15 @@ class TagsController extends Controller
     {
         $auth = auth()->user();
         $tags = Tags::all();
-        $favoriteTagsId = $auth->userFavoriteTag->pluck('tag_id');
-        $favoriteTags = Tags::whereIn('id', $favoriteTagsId)->get();
+        $favoriteTagsId = $auth->userFavoriteTag;
+        // $favoriteTags = Tags::whereIn('id', $favoriteTagsId)->get();
 
-        return response()->json($favoriteTags);
+        return response()->json([
+            'auth' => $auth,
+            'tags' => $tags,
+            'favoriteTagsId' => $favoriteTagsId,
+            // 'favoriteTags' => $favoriteTags,
+        ]);
     }
 
     /**
