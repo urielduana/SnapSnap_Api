@@ -111,6 +111,10 @@ class FavoriteTagController extends Controller
      */
     public function destroy(FavoriteTag $favoriteTag)
     {
-        //
+        // Delete the favorite tags of the user that are in the request
+        $deleteTags = $favoriteTag->delete();
+        $auth = auth()->user()->id;
+
+        return $deleteTags;
     }
 }
