@@ -38,10 +38,13 @@ Route::middleware('auth:sanctum')->post('register/profile_photo', [AuthControlle
 // Tags
 Route::middleware('auth:sanctum')->resource('tags', TagsController::class);
 
+// Favorite Tags
+Route::middleware('auth:sanctum')->resource('favorite_tags', FavoriteTagController::class);
+
 
 // Test
 Route::get('posts', [PostController::class, 'index']);
-Route::post('img', [PostController::class, 'store']);
+Route::post('img', [PostController::class, 'store'])->middleware('auth:sanctum');
 // getProfilePhoto
 Route::middleware('auth:sanctum')->get('profile_photo/', [AuthController::class, 'getProfilePhoto']);
 

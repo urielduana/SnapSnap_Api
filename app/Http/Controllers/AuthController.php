@@ -41,6 +41,13 @@ class AuthController extends Controller
         $favoriteTags->user_id = $user->id;
         $favoriteTags->tag_id = 2;
         $favoriteTags->save();
+
+        try {
+            $user->addMediaFromUrl('https://ui-avatars.com/api/?name=' . $user->name . '&color=random&background=random')->toMediaCollection('profile_photo', 's3');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         // Return user token
         return $user->createToken($request->device_name)->plainTextToken;
     }
