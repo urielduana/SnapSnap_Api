@@ -111,10 +111,16 @@ class FavoriteTagController extends Controller
      */
     public function destroy(FavoriteTag $favoriteTag)
     {
-        // Delete the favorite tags of the user that are in the request
-        $deleteTags = $favoriteTag->delete();
+        // Delete the favorite tag from the auth user
         $auth = auth()->user()->id;
+        $tag = $favoriteTag->tag_id;
 
-        return $deleteTags;
+        try {
+            $favoriteTag = FavoriteTag::where('user_id', $auth)->where('tag_id', $tag)->first();
+            $favoriteTag->delete();
+            return response()->json(['message' => 'Favorite tag deleted successfully'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Error deleting favorite tag'], 500);
+        }
     }
 }
