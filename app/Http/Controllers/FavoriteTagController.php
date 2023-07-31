@@ -65,12 +65,17 @@ class FavoriteTagController extends Controller
      */
     public function store(Request $request)
     {
-        // Receive something like this: {favorite_tags: [{id: 3}, {id: 4}, {id: 6}, {id: 7}, {id: 5}]}
+        // Receive something like this: {favorite_tags: [3, 5, 8, 9, 10]}
+        // This function add the favorite tags to the current user
+
+        // Get the favorite tags from the request
         $favoriteTags = $request->favorite_tags;
-        // Get the first element of the array
-        $selected = $favoriteTags[0];
-        //  Return $selected and $favoriteTags
-        return response()->json(['selected' => $selected, 'favoriteTags' => $favoriteTags]);
+        $tags = [];
+        foreach ($favoriteTags as $tag) {
+            //  Save number of the tag in the array
+            array_push($tags, $tag);
+        }
+        return $this->addFavoriteTags($tags);
     }
 
     /**
