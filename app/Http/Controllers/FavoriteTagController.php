@@ -91,11 +91,11 @@ class FavoriteTagController extends Controller
             }
         }
 
-        if ($errorNumber) {
-            return response()->json($errorNumber, 500);
-        } else {
-            return response()->json(['message' => 'Favorite tags added successfully'], 200);
-        }
+        // if ($errorNumber) {
+        //     return response()->json($errorNumber, 500);
+        // } else {
+        //     return response()->json(['message' => 'Favorite tags added successfully'], 200);
+        // }
     }
 
     /**
