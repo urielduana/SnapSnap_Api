@@ -70,7 +70,7 @@ class FavoriteTagController extends Controller
 
         // Get the favorite tags from the request
         $favoriteTags = $request->favorite_tags;
-        $favoriteTags = json_decode($favoriteTags);
+        // $favoriteTags = json_decode($favoriteTags);
 
         // Get the current user
         $auth = auth()->user()->id;
