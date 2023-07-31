@@ -75,6 +75,8 @@ class FavoriteTagController extends Controller
         // Get the current user
         $auth = auth()->user()->id;
 
+        return $favoriteTags[0];
+
         // Add the favorite tags to the current user
         try {
             foreach ($favoriteTags as $favoriteTag) {
