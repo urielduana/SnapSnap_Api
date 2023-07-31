@@ -65,22 +65,9 @@ class FavoriteTagController extends Controller
      */
     public function store(Request $request)
     {
-        $tags = $request->json()->all();
-        return $tags;
-        // $auth = auth()->user()->id;
-
-
-        // try {
-        //     foreach ($tags as $tag) {
-        //         $favoriteTag = new FavoriteTag();
-        //         $favoriteTag->user_id = $auth;
-        //         $favoriteTag->tag_id = $tag['id'];
-        //         $favoriteTag->save();
-        //     }
-        //     return response()->json(['message' => 'Favorite tags added successfully'], 200);
-        // } catch (\Throwable $th) {
-        //     return response()->json(['message' => 'Error adding favorite tags'], 500);
-        // }
+        // Receive something like this: {favorite_tags: [{id: 3}, {id: 4}, {id: 6}, {id: 7}, {id: 5}]}
+        $favoriteTags = $request->favorite_tags;
+        return $favoriteTags;
     }
 
     /**
