@@ -67,10 +67,17 @@ class FavoriteTagController extends Controller
     {
         // Receive something like this: {favorite_tags: [{id: 3}, {id: 4}, {id: 6}, {id: 7}, {id: 5}]}
         $favoriteTags = $request->favorite_tags;
-        //  $favoriteTags turns to this: [{"id":3},{"id":4},{"id":6},{"id":7},{"id":5}]
-        $favoriteTagsDecoded = json_decode($favoriteTags);
 
-        return $favoriteTagsDecoded;
+        // Get the auth user
+        $auth = auth()->user()->id;
+
+        // Return all ids of $favoriteTags in an array
+        $ids = [];
+        foreach ($favoriteTags as $favoriteTag) {
+            array_push($ids, $favoriteTag['id']);
+        }
+
+        return response()->json($ids);
     }
 
     /**
