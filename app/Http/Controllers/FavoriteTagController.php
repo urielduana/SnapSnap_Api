@@ -70,7 +70,13 @@ class FavoriteTagController extends Controller
 
         // Get the auth user
         $auth = auth()->user()->id;
-        return response()->json($favoriteTags);
+        $prueba = [];
+        foreach ($favoriteTags as $favoriteTag) {
+            // Save id on $prueba from "[{id: 3}, {id: 4}, {id: 6}, {id: 7}, {id: 5}]"
+            array_push($prueba, $favoriteTag['id']);
+        }
+
+        return $prueba;
     }
 
     /**
