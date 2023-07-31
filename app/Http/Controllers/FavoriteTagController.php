@@ -70,7 +70,7 @@ class FavoriteTagController extends Controller
 
         // Get the auth user
         $auth = auth()->user()->id;
-        return response()->json($auth, $favoriteTags);
+        return response()->json($favoriteTags);
     }
 
     /**
