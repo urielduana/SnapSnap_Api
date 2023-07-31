@@ -70,8 +70,14 @@ class FavoriteTagController extends Controller
 
         // Get the favorite tags from the request
         $favoriteTags = $request->favorite_tags;
-        $tagsDecoded = json_decode($favoriteTags);
-        return $tagsDecoded;
+        $favoriteTags = json_decode($favoriteTags);
+
+        $prueba = [];
+        foreach ($favoriteTags as $tag) {
+            array_push($prueba, $tag);
+        }
+
+        return response()->json($prueba);
     }
 
     /**
