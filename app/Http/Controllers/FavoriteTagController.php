@@ -67,10 +67,7 @@ class FavoriteTagController extends Controller
     {
         // Receive something like this: {favorite_tags: [{id: 3}, {id: 4}, {id: 6}, {id: 7}, {id: 5}]}
         $favoriteTags = $request->favorite_tags;
-        // Get the auth user
-        $auth = auth()->user()->id;
-
-        return $this->storeFavoriteTags($favoriteTags, $auth);
+        return $favoriteTags;
     }
 
     /**
