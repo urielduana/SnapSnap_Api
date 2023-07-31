@@ -70,21 +70,7 @@ class FavoriteTagController extends Controller
         // Get the auth user
         $auth = auth()->user()->id;
 
-        $prueba = [];
-        // Add the favorite tags to the auth user
-        try {
-            foreach ($favoriteTags as $favoriteTag) {
-                // $tag = new FavoriteTag();
-                // $tag->user_id = $auth;
-                // $tag->tag_id = $favoriteTag['id'];
-                // $tag->save();
-                dd($favoriteTag);
-            }
-            // return response()->json(['message' => 'Favorite tags added successfully'], 200);
-            return response()->json($prueba);
-        } catch (\Throwable $th) {
-            // return response()->json(['message' => 'Error adding favorite tags'], 500);
-        }
+        return $this->storeFavoriteTags($favoriteTags, $auth);
     }
 
     /**
