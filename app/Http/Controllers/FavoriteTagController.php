@@ -73,28 +73,29 @@ class FavoriteTagController extends Controller
         return response()->json($favoriteTags);
         $favoriteTags = json_decode($favoriteTags);
 
-        // // Get the current user
-        // $auth = auth()->user()->id;
-        // $errorNumber = [];
+        // Get the current user
+        $auth = auth()->user()->id;
+        $errorNumber = [];
 
         // // Add the favorite tags to the current user
 
-        // foreach ($favoriteTags as $favoriteTagId) {
-        //     try {
-        //         $newFavoriteTag = new FavoriteTag();
-        //         $newFavoriteTag->user_id = $auth;
-        //         $newFavoriteTag->tag_id = $favoriteTagId;
-        //         $newFavoriteTag->save();
-        //     } catch (\Throwable $th) {
-        //         array_push($errorNumber, $favoriteTagId);
-        //     }
-        // }
+        foreach ($favoriteTags as $favoriteTagId) {
+            try {
+                // $newFavoriteTag = new FavoriteTag();
+                // $newFavoriteTag->user_id = $auth;
+                // $newFavoriteTag->tag_id = $favoriteTagId;
+                // $newFavoriteTag->save();
+                return response()->json($favoriteTagId);
+            } catch (\Throwable $th) {
+                array_push($errorNumber, $favoriteTagId);
+            }
+        }
 
-        // if ($errorNumber) {
-        //     return response()->json($errorNumber, 500);
-        // } else {
-        //     return response()->json(['message' => 'Favorite tags added successfully'], 200);
-        // }
+        if ($errorNumber) {
+            return response()->json($errorNumber, 500);
+        } else {
+            return response()->json(['message' => 'Favorite tags added successfully'], 200);
+        }
     }
 
     /**
