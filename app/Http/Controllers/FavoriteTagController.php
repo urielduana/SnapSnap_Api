@@ -67,6 +67,8 @@ class FavoriteTagController extends Controller
     {
         // Receive something like this: {favorite_tags: [{id: 3}, {id: 4}, {id: 6}, {id: 7}, {id: 5}]}
         $favoriteTags = $request->favorite_tags;
+        // Get the first element of the array
+        $favoriteTag = $favoriteTags[0];
         return $favoriteTags;
     }
 
