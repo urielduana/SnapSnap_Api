@@ -88,11 +88,7 @@ class FavoriteTagController extends Controller
                 array_push($errorNumber, $favoriteTag);
             }
         }
-        if (count($errorNumber) > 0) {
-            return response()->json(['message' => 'Error adding favorite tags', 'error' => $errorNumber], 500);
-        } else {
-            return response()->json(['message' => 'Favorite tags added successfully'], 200);
-        }
+        return response()->json(['message' => 'Favorite tags added successfully'], 200);
     }
 
     /**
