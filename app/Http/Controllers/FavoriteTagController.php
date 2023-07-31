@@ -67,11 +67,16 @@ class FavoriteTagController extends Controller
     {
         // Receive something like this: {favorite_tags: [{id: 3}, {id: 4}, {id: 6}, {id: 7}, {id: 5}]}
         $favoriteTags = $request->favorite_tags;
+        //  $favoriteTags turns to this: [{"id":3},{"id":4},{"id":6},{"id":7},{"id":5}]
+        $favoriteTags = json_decode($favoriteTags);
 
-        // Convert the JSON string to a PHP array
-        $favoriteTagsArray = json_decode($favoriteTags, true);
+        $savedFavoriteTagsIds = [];
+        // Take all the ids from the favorite tags and save them into the variable $savedFavoriteTagsIds
+        foreach ($favoriteTags as $favoriteTag) {
+            array_push($savedFavoriteTagsIds, $favoriteTag->id);
+        }
 
-        return $favoriteTagsArray;
+        return response()->json($savedFavoriteTagsIds);
     }
 
     /**
