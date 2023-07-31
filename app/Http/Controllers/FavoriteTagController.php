@@ -70,12 +70,8 @@ class FavoriteTagController extends Controller
 
         // Get the favorite tags from the request
         $favoriteTags = $request->favorite_tags;
-        $tags = [];
-        foreach ($favoriteTags as $tag) {
-            //  Save number of the tag in the array
-            array_push($tags, $tag);
-        }
-        return $this->addFavoriteTags($tags);
+        $tagsDecoded = json_decode($favoriteTags);
+        return $tagsDecoded;
     }
 
     /**
