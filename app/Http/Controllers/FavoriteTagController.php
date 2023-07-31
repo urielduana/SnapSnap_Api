@@ -78,7 +78,7 @@ class FavoriteTagController extends Controller
                 // $tag->user_id = $auth;
                 // $tag->tag_id = $favoriteTag['id'];
                 // $tag->save();
-                $prueba[] = $favoriteTag['id'];
+                array_push($prueba, $favoriteTag['id']);
             }
             // return response()->json(['message' => 'Favorite tags added successfully'], 200);
             return response()->json($prueba);
