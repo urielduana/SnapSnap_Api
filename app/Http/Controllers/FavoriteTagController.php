@@ -79,10 +79,10 @@ class FavoriteTagController extends Controller
         // Add the favorite tags to the current user
 
         foreach ($favoriteTags as $favoriteTag) {
-            $favoriteTag = new FavoriteTag();
-            $favoriteTag->user_id = $auth;
-            $favoriteTag->tag_id = $favoriteTag;
             try {
+                $favoriteTag = new FavoriteTag();
+                $favoriteTag->user_id = $auth;
+                $favoriteTag->tag_id = $favoriteTag;
                 $favoriteTag->save();
             } catch (\Throwable $th) {
                 array_push($errorNumber, $favoriteTag);
