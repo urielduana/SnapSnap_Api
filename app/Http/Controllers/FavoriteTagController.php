@@ -71,18 +71,7 @@ class FavoriteTagController extends Controller
         // Convert the JSON string to a PHP array
         $favoriteTagsArray = json_decode($favoriteTags, true);
 
-        // Initialize an array to store the ids
-        $ids = [];
-
-        // Iterate over the array of objects and extract the id values
-        foreach ($favoriteTagsArray as $tag) {
-            if (isset($tag['id'])) {
-                $ids[] = $tag['id'];
-            }
-        }
-
-        // $ids now contains the array of id values
-        return response()->json($ids);
+        return $favoriteTagsArray;
     }
 
     /**
