@@ -65,20 +65,35 @@ class FavoriteTagController extends Controller
      */
     public function store(Request $request)
     {
-        $tags = $request->json()->all();
+        // Receive something like this: {favorite_tags: [3, 5, 8, 9, 10]}
+        // This function add the favorite tags to the current user
+
+        // Get the favorite tags from the request
+        $favoriteTags = $request->favorite_tags;
+        // $favoriteTags = json_decode($favoriteTags);
+
+        // Get the current user
         $auth = auth()->user()->id;
+        $errorNumber = [];
 
 
-        try {
-            foreach ($tags as $tag) {
-                $favoriteTag = new FavoriteTag();
-                $favoriteTag->user_id = $auth;
-                $favoriteTag->tag_id = $tag['id'];
-                $favoriteTag->save();
+        // Add the favorite tags to the current user
+
+        foreach ($favoriteTags as $favoriteTagId) {
+            try {
+                $newFavoriteTag = new FavoriteTag();
+                $newFavoriteTag->user_id = $auth;
+                $newFavoriteTag->tag_id = $favoriteTagId;
+                $newFavoriteTag->save();
+            } catch (\Throwable $th) {
+                array_push($errorNumber, $favoriteTagId);
             }
+        }
+
+        if ($errorNumber) {
+            return response()->json($errorNumber, 500);
+        } else {
             return response()->json(['message' => 'Favorite tags added successfully'], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'Error adding favorite tags'], 500);
         }
     }
 
@@ -111,6 +126,16 @@ class FavoriteTagController extends Controller
      */
     public function destroy(FavoriteTag $favoriteTag)
     {
-        //
+        // Delete the favorite tag from the auth user
+        $auth = auth()->user()->id;
+        $tag = $favoriteTag->tag_id;
+
+        try {
+            $favoriteTag = FavoriteTag::where('user_id', $auth)->where('tag_id', $tag)->first();
+            $favoriteTag->delete();
+            return response()->json(['message' => 'Favorite tag deleted successfully'], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Error deleting favorite tag'], 500);
+        }
     }
 }
