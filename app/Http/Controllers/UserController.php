@@ -17,8 +17,8 @@ class UserController extends Controller
     public function searchUsers(Request $request)
     {
         $search = $request->get('search');
-        $users = User::where('name', 'LIKE', "%{$search}%")
-            ->orWhere('username', 'LIKE', "%{$search}%")
+        $users = User::where('name', 'LIKE', "%$search%")
+            ->orWhere('username', 'LIKE', "%$search%")
             ->get();
         // Return json response
         return response()->json($users);
