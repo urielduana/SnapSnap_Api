@@ -24,10 +24,10 @@ class UserController extends Controller
         // Get all profile photos of users
         foreach ($users as $user) {
             // $user->profile_photo_url = $user->getMedia('profile_photo');
-            $user->profile_photo_url = $user->getMedia('profile_photo')->last()->select('original_url');
+            $user->profile_photo_url = $user->getLastMedia('profile_photo');
         }
         // Remove "media" object from response
-        // $users = $users->makeHidden('media');
+        $users = $users->makeHidden('media');
         // Return json response
         return response()->json($users);
     }
