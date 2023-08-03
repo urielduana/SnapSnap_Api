@@ -24,7 +24,7 @@ class UserController extends Controller
         // Get all profile photos of users
         foreach ($users as $user) {
             // $user->profile_photo_url = $user->getMedia('profile_photo');
-            $user->profile_photo_url = $user->getMedia('profile_photo')->last();
+            $user->profile_photo_url = $user->getMedia('profile_photo')->last()->secure_url;
         }
         // Remove "media" object from response
         $users = $users->makeHidden('media');
