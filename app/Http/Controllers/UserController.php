@@ -23,8 +23,12 @@ class UserController extends Controller
             ->get();
         // Get all profile photos of users
         foreach ($users as $user) {
-            // $user->profile_photo_url = $user->getMedia('profile_photo');
-            $user->profile_photo_url = $user->getFirstMediaUrl('profile_photo');
+            $profilePhotos = $user->getMedia('profile_photo')->sortByDesc('created_at');
+            if ($profilePhotos->isNotEmpty()) {
+                $user->profile_photo = $profilePhotos->first()->getFullUrl();
+            } else {
+                $user->profile_photo = null;
+            }
         }
         // Remove "media" object from response
         $users = $users->makeHidden('media');
