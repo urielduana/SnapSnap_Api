@@ -27,7 +27,7 @@ class UserController extends Controller
             $user->profile_photo_url = $user->getMedia('profile_photo')->last()->select('original_url');
         }
         // Remove "media" object from response
-        $users = $users->makeHidden('media');
+        // $users = $users->makeHidden('media');
         // Return json response
         return response()->json($users);
     }
