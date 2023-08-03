@@ -31,7 +31,7 @@ class UserController extends Controller
             }
         }
         // Remove "media" object from response
-        // $users = $users->makeHidden('media');
+        $users = $users->makeHidden('media');
         // Return json response
         return response()->json($users);
     }
