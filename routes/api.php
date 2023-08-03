@@ -41,6 +41,11 @@ Route::middleware('auth:sanctum')->resource('tags', TagsController::class);
 // Favorite Tags
 Route::middleware('auth:sanctum')->resource('favorite_tags', FavoriteTagController::class);
 
+// Users
+
+// Search Users
+Route::post('users/search', [UserController::class, 'searchUsers']);
+
 
 // Test
 Route::get('posts', [PostController::class, 'index']);
