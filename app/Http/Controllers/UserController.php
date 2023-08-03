@@ -21,12 +21,13 @@ class UserController extends Controller
             ->orWhere('username', 'LIKE', "%$search%")
             ->select('id', 'name', 'username')
             ->get();
-        // Add last time profile photo url from spaite media library
+        // Get all profile photos of users
         foreach ($users as $user) {
-            $user->profile_photo_url = $user->getFirstMediaUrl('profile_photo');
+            $user->profile_photo_url = $user->getMedia('profile_photo');
+            // $user->profile_photo_url = $user->getFirstMediaUrl('profile_photo');
         }
         // Remove "media" object from response
-        $users = $users->makeHidden('media');
+        // $users = $users->makeHidden('media');
         // Return json response
         return response()->json($users);
     }
