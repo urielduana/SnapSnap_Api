@@ -25,6 +25,8 @@ class UserController extends Controller
         foreach ($users as $user) {
             $user->profile_photo_url = $user->getFirstMediaUrl('profile_photo');
         }
+        // Remove "media" object from response
+        $users = $users->makeHidden('media');
         // Return json response
         return response()->json($users);
     }
