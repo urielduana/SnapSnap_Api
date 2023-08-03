@@ -2,13 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FavoriteTagController;
 use App\Http\Controllers\TagsController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
