@@ -19,8 +19,12 @@ class UserController extends Controller
         $search = $request->get('search');
         $users = User::where('name', 'LIKE', "%$search%")
             ->orWhere('username', 'LIKE', "%$search%")
-            ->select('name', 'username')
+            ->select('id', 'name', 'username')
             ->get();
+        // Add last time profile photo url from spaite media library
+        foreach ($users as $user) {
+            $user->profile_photo_url = $user->getFirstMediaUrl('profile_photo');
+        }
         // Return json response
         return response()->json($users);
     }
