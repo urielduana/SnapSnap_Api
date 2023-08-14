@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Tags;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -20,14 +21,14 @@ class Post extends Model implements HasMedia
         'tag_id'
     ];
 
-    public function userPost()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     public function tagPost()
     {
-        return $this->belongsTo(Tag::class);
+        return $this->belongsTo(Tags::class);
     }
 
     public function likes()
@@ -51,5 +52,10 @@ class Post extends Model implements HasMedia
               ->width(1080)
               ->height(1080);
     }
+
+    public function registerMediaCollections():void{
+        $this->addMediaCollection('posts');
+    }
+
 
 }

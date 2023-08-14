@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
+use App\Models\Tags;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -38,48 +40,50 @@ class PostController extends Controller implements HasMedia
      * Store a newly created resource in storage.
      */
 
+
 public function store(Request $request)
 {
-	try {
-            $caption = $request->input('caption');
-            $tags = explode(',', $request->input('tags'));
-            $images = $request->file('images');
+    try {
+        $description = $request->input('description');
+        $tags = explode(',', $request->input('tags'));
+        $images = $request->file('images');
 
-            // Validar que el usuario esté autenticado
-            $user = Auth::user();
-            if (!$user) {
-                return response()->json(['error' => 'Usuario no autenticado'], 401);
+        // Validar que el usuario esté autenticado
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        }
+
+        // Validar que se hayan enviado imágenes
+        if (!$images) {
+            return response()->json(['error' => 'No se enviaron imágenes válidas.'], 400);
+        }
+
+        $urls = [];
+        $s3 = Storage::disk('s3');
+
+        // Guardar las imágenes en S3 y obtener URLs públicas
+        foreach ($images as $image) {
+            if (!$image->isValid()) {
+                continue;
             }
-            // Validar que se hayan enviado imágenes
-            if (!$images) {
-                return response()->json(['error' => 'No se enviaron imágenes válidas.'], 400);
-            }
 
-            $urls = [];
-	    $s3 = Storage::disk('s3');
+            $path = 'posts/' . time() . '_' . $image->getClientOriginalName();
+            $s3->put($path, file_get_contents($image), 'public');
+            $url = $s3->url($path); // Obtener la URL completa de S3
+            $urls[] = $url;
+        }
 
-            // Guardar las imágenes en S3
-            foreach ($images as $image) {
-                if (!$image->isValid()) {
-                    continue;
-                }
+        // Crear el post
+        $post = new Post();
+	$post->user_id = $user->id;
+	$post->url = $urls[0];
+        $post->description = $description;
+        // Falta arreglar esto de los múltiples tags
+        $post->tag_id = $tags[0];
+        $post->save();
 
-                $path = 'posts/' . time() . '_' . $image->getClientOriginalName();
-                $s3->put($path, file_get_contents($image), 'public');
-                $url = Storage::url($path);
-                $urls[] = $url;
-	    }
-
-            // Crear el post
-            $post = new Post();
-            $post->user_id = $user->id;
-	    $post->description = $caption;
-	    //Falta arreglar esto de los multiples tags
-            $post->tag_id = $tags[0];
-	    $post->save();
-
-
-	// Guardar las imágenes utilizando Laravel-MediaLibrary
+        // Guardar las imágenes utilizando Laravel-MediaLibrary
         foreach ($images as $image) {
             if (!$image->isValid()) {
                 continue;
@@ -91,15 +95,15 @@ public function store(Request $request)
             $urls[] = $media->getFullUrl();
         }
 
-
-
-            return response()->json(['urls' => $urls, 'user' => $user, 'caption' => $caption, 'tags' => $tags], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Error al procesar las imágenes.'], 500);
-        }
+        return response()->json(['urls' => $urls, 'user' => $user, 'description' => $description, 'tags' => $tags], 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Error al procesar las imágenes.'], 500);
+    }
 }
 
-    public function avatar(Request $request){
+
+
+ public function avatar(Request $request){
           try {
             $folder = 'avatar';
 
@@ -130,6 +134,52 @@ public function store(Request $request)
             ], 500);
         }
     }
+
+
+
+public function feed()
+{
+    try {
+        // Usuario autenticado
+        $auth = Auth::user();
+        $user = User::find($auth->id);
+
+        $favoriteTagIds = $user->favoriteTags()->pluck('tag_id')->toArray();
+
+        $posts = Post::whereIn('tag_id', $favoriteTagIds)
+            ->orderBy('id', 'desc')
+            ->with(['user', 'tagPost'])
+            ->get();
+
+        $tagNames = Tags::whereIn('id', $favoriteTagIds)
+            ->pluck('tag_name', 'id')
+            ->toArray();
+
+        $transformedPosts = $posts->map(function ($post) use ($tagNames) {
+            return [
+                'id' => $post->id,
+                'url' => $post->url,
+                'description' => $post->description,
+                'created_at' => $post->created_at,
+                'user_id' => $post->user_id,
+		'username' => $post->user->username,
+
+                'tag_name' => isset($tagNames[$post->tag_id]) ? $tagNames[$post->tag_id] : null,
+            ];
+        });
+
+        return response()->json(
+            $transformedPosts
+        );
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error al obtener los posts'
+        ], 500);
+    }
+}
+
+
+
 
     /**
      * Display the specified resource.
