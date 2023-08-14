@@ -2,13 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FavoriteTagController;
 use App\Http\Controllers\TagsController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,10 +34,16 @@ Route::post('register/username', [AuthController::class, 'verifyUsername']);
 Route::middleware('auth:sanctum')->post('register/profile_photo', [AuthController::class, 'uploadProfilePhoto']);
 
 // Tags
-Route::middleware('auth:sanctum')->resource('tags', TagsController::class);
+//Route::middleware('auth:sanctum')->resource('tags', TagsController::class);
+Route::get('tags', [TagsController::class, 'index']);
 
 // Favorite Tags
 Route::middleware('auth:sanctum')->resource('favorite_tags', FavoriteTagController::class);
+
+// Users
+
+// Search Users
+Route::middleware('auth:sanctum')->post('users/search', [UserController::class, 'searchUsers']);
 
 
 // Test
@@ -49,3 +53,4 @@ Route::post('img', [PostController::class, 'store'])->middleware('auth:sanctum')
 Route::middleware('auth:sanctum')->get('profile_photo/', [AuthController::class, 'getProfilePhoto']);
 
 // Route::post('/tags', [FavoriteTagController::class, 'store']);
+Route::middleware('auth:sanctum')->get('feed', [PostController::class, 'feed']);
