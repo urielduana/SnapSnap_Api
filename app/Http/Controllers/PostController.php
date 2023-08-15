@@ -144,27 +144,38 @@ public function feed()
         $auth = Auth::user();
         $user = User::find($auth->id);
 
-        $favoriteTagIds = $user->favoriteTags()->pluck('tag_id')->toArray();
+	//$favoriteTagIds = $user->favoriteTags()->pluck('tag_id')->toArray();
+	$favoriteTagIds = $user->favoriteTags()->pluck('tag_id')->toArray();
 
         $posts = Post::whereIn('tag_id', $favoriteTagIds)
             ->orderBy('id', 'desc')
-            ->with(['user', 'tagPost'])
+            ->with(['user', 'tagPost', 'likes','comments'])
             ->get();
+
+        $likedPostIds = $user->likedPosts->pluck('id')->toArray();
 
         $tagNames = Tags::whereIn('id', $favoriteTagIds)
             ->pluck('tag_name', 'id')
             ->toArray();
 
-        $transformedPosts = $posts->map(function ($post) use ($tagNames) {
+        $transformedPosts = $posts->map(function ($post) use ($tagNames, $likedPostIds) {
             return [
                 'id' => $post->id,
                 'url' => $post->url,
                 'description' => $post->description,
                 'created_at' => $post->created_at,
                 'user_id' => $post->user_id,
-		'username' => $post->user->username,
-
+                'username' => $post->user->username,
                 'tag_name' => isset($tagNames[$post->tag_id]) ? $tagNames[$post->tag_id] : null,
+                'likes' => $post->likes->count(),
+		'liked' => in_array($post->id, $likedPostIds),
+		'comments' => $post->comments->map(function ($comment) {
+                    return [
+                        'id' => $comment->id,
+                        'text' => $comment->comment,
+                        'created_at' => $comment->created_at,
+                    ];
+                }),
             ];
         });
 
@@ -179,31 +190,25 @@ public function feed()
 }
 
 
+public function toggleLike(Post $post, Request $request)
+{
+    $auth = Auth::user();
+    $userId = $auth->id;
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Post $post)
-    {
-        //
+    if ($post->likedByUser($userId)) {
+        $post->removeLike($userId);
+        $liked = false;
+    } else {
+        $post->addLike($userId);
+        $liked = true;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
+    return response()->json([
+        'liked' => $liked,
+    ]);
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Post $post)
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.
