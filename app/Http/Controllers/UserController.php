@@ -48,7 +48,7 @@ class UserController extends Controller
     public function followUser(Request $request)
     {
         $authUser = auth()->user();
-        $user = User::find($request->   );
+        $user = User::find($request->user_id);
 
         $follower = Follower::create([
             'user_id' => $authUser->id,
