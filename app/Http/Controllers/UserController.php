@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -22,9 +23,10 @@ class UserController extends Controller
         $users = User::where('name', 'LIKE', "%$search%")
             ->orWhere('username', 'LIKE', "%$search%")
             ->select('id', 'name', 'username')
-            ->with(['followers' => function ($query) use ($authUser) {
+            ->withCount(['followers as is_following' => function ($query) use ($authUser) {
                 $query->where('follower_id', $authUser->id);
             }])
+            ->with(['media', 'followers'])
             ->get();
 
         foreach ($users as $user) {
@@ -41,5 +43,18 @@ class UserController extends Controller
         $users = $users->makeHidden('media');
 
         return response()->json($users);
+    }
+
+    public function followUser(Request $request)
+    {
+        $authUser = auth()->user();
+        $user = User::find($request->user_id);
+
+        $follower = Follower::create([
+            'user_id' => $authUser->id,
+            'follower_id' => $user->id,
+        ]);
+
+        return response()->json($follower);
     }
 }
