@@ -54,3 +54,5 @@ Route::middleware('auth:sanctum')->get('profile_photo/', [AuthController::class,
 
 // Route::post('/tags', [FavoriteTagController::class, 'store']);
 Route::middleware('auth:sanctum')->get('feed', [PostController::class, 'feed']);
+
+Route::middleware('auth:sanctum')->post('posts/{post}/like', [PostController::class, 'togglelike']);
