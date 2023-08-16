@@ -65,5 +65,13 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(FavoriteTag::class);
     }
 
+    public function followers()
+    {
+        return $this->hasMany(Follower::class, 'user_id');
+    }
 
+    public function isFollowedBy($followerId)
+    {
+        return $this->followers->contains('follower_id', $followerId);
+    }
 }

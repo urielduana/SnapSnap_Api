@@ -16,12 +16,17 @@ class UserController extends Controller
 
     public function searchUsers(Request $request)
     {
+        $authUser = auth()->user();
         $search = $request->get('search');
+
         $users = User::where('name', 'LIKE', "%$search%")
             ->orWhere('username', 'LIKE', "%$search%")
             ->select('id', 'name', 'username')
+            ->with(['followers' => function ($query) use ($authUser) {
+                $query->where('follower_id', $authUser->id);
+            }])
             ->get();
-        // Get all profile photos of users
+
         foreach ($users as $user) {
             $profilePhotos = $user->getMedia('profile_photo')->sortByDesc('created_at');
             if ($profilePhotos->isNotEmpty()) {
@@ -29,10 +34,12 @@ class UserController extends Controller
             } else {
                 $user->profile_photo = null;
             }
+
+            $user->is_following = $user->followers->isNotEmpty();
         }
-        // Remove "media" object from response
+
         $users = $users->makeHidden('media');
-        // Return json response
+
         return response()->json($users);
     }
 }
