@@ -26,9 +26,7 @@ class UserController extends Controller
             ->withCount(['followers as is_following' => function ($query) use ($authUser) {
                 $query->where('follower_id', $authUser->id);
             }])
-            ->with(['followers' => function ($query) {
-                $query->select('id', 'follower_id', 'user_id');
-            }])
+            ->withCount('followers')
             ->get();
 
         foreach ($users as $user) {
@@ -46,6 +44,7 @@ class UserController extends Controller
 
         return response()->json($users);
     }
+
 
 
     public function followUser(Request $request)
