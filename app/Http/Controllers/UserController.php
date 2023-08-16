@@ -57,4 +57,18 @@ class UserController extends Controller
 
         return response()->json($follower);
     }
+
+    public function unFollowUser(Request $request)
+    {
+        $authUser = auth()->user();
+        $user = User::find($request->user_id);
+
+        $follower = Follower::where('user_id', $authUser->id)
+            ->where('follower_id', $user->id)
+            ->first();
+
+        $follower->delete();
+
+        return response()->json($follower);
+    }
 }
