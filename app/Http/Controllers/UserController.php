@@ -48,7 +48,6 @@ class UserController extends Controller
     }
 
 
-
     public function followUser(Request $request)
     {
         $authUser = auth()->user();
