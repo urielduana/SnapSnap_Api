@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->post('users/search', [UserController::class, 
 
 // Follow user
 Route::middleware('auth:sanctum')->post('users/follow', [UserController::class, 'followUser']);
+Route::middleware('auth:sanctum')->post('users/unfollow', [UserController::class, 'unFollowUser']);
 
 
 // Test
