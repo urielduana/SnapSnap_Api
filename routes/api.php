@@ -65,4 +65,4 @@ Route::middleware('auth:sanctum')->post('posts/{post}/like', [PostController::cl
 // Ruta para obtener los comentarios de un post
 Route::get('posts/{post}/comments', [CommentController::class, 'index']);
 // Ruta para crear un comentario
-Route::middleware('auth:sanctum')->post('posts/{post}/comments', [CommentController::class, 'store']);
+Route::post('posts/{post}/comments', [CommentController::class, 'store']);
