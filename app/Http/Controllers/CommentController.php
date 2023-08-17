@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $post = Post::find($id);
+        $comments = $post->comments->load('userComment');
+        return response()->json($comments);
     }
 
     /**
@@ -26,9 +30,16 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $postId)
     {
-        //
+        //usuario autenticado
+        $user = Auth::user();
+        $comment = new Comment();
+        $comment->comment = $request->input('comment');
+        $comment->post_id = $postId;
+        $comment->user_comment_id = $user->id;
+        $comment->save();
+        return response()->json($comment);
     }
 
     /**

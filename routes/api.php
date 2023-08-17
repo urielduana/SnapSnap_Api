@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FavoriteTagController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,3 +66,8 @@ Route::middleware('auth:sanctum')->get('profile_photo/', [AuthController::class,
 Route::middleware('auth:sanctum')->get('feed', [PostController::class, 'feed']);
 
 Route::middleware('auth:sanctum')->post('posts/{post}/like', [PostController::class, 'togglelike']);
+
+// Ruta para obtener los comentarios de un post
+Route::get('posts/{post}/comments', [CommentController::class, 'index']);
+// Ruta para crear un comentario
+Route::middleware('auth:sanctum')->post('posts/{post}/comments', [CommentController::class, 'store']);
