@@ -97,6 +97,11 @@ class UserController extends Controller
             ->where('tag_id', $tag_id)
             ->get();
 
-        return response()->json($tag, $post);
+        $data = [
+            'tag' => $tag,
+            'post' => $post,
+        ];
+
+        return response()->json($data);
     }
 }
