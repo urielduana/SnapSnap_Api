@@ -6,6 +6,7 @@ use App\Models\FavoriteTag;
 use Illuminate\Http\Request;
 use App\Models\Tags;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class FavoriteTagController extends Controller
 {
@@ -14,12 +15,10 @@ class FavoriteTagController extends Controller
      */
     public function index()
     {
-        // This function returns the info from Tags table of all the tags related to the current user that are favorite
-        // Needs this info to show the favorite tags for delete or edit the favorite tags of the user
+        $auth = Auth::user();
+        $user = User::find($auth->id);
 
-        // Return all favorite tags for the current user
-        $authUser = User::find(auth()->user()->id);
-        $authFavoriteTags = $authUser->favoriteTags()->get();
+        $authFavoriteTags = $user->favoriteTags()->get();
 
         // Get all Tags from FavoriteTag on a object
         $tagsFavoriteTag = [];
