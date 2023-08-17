@@ -79,13 +79,13 @@ class UserController extends Controller
     {
         $user = User::find($request->user_id);
 
-        // Load user's favorite tags with their corresponding tags and posts
-        $user->favoriteTags->load(['tagFavoriteTag.tag', 'tagFavoriteTag.tag.posts' => function ($query) {
+        $user->favoriteTags->load(['tag.tagPost', 'tag.tagPost' => function ($query) {
             $query->orderBy('created_at', 'desc')->first();
         }]);
 
-        // Calculate followers count
         $user->followers_count = $user->followers->count();
+
+        $user->load('likedPosts', 'posts');
 
         return response()->json($user);
     }
