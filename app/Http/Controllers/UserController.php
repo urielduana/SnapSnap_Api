@@ -74,4 +74,19 @@ class UserController extends Controller
 
         return response()->json($follower);
     }
+
+    public function userProfile(Request $request)
+    {
+        $user = User::find($request->user_id);
+        $user->favoriteTags->load('tag');
+        // Add last post of each tag
+        foreach ($user->favoriteTags as $favoriteTag) {
+            $favoriteTag->tag->load(['posts' => function ($query) {
+                $query->orderBy('created_at', 'desc')->first();
+            }]);
+        }
+        $user->followers_count = $user->followers->count();
+
+        return response()->json($user);
+    }
 }
