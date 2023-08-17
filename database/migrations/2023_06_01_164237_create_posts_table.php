@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-	    $table->id();
-	    $table->string('url')->nullable();
+      	    $table->id();
+	        $table->string('url')->nullable();
             $table->text('description')->nullable();
-            //$table->text('description');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('tag_id');
             $table->timestamps();
