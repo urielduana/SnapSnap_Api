@@ -75,7 +75,7 @@ class UserController extends Controller
         return response()->json($follower);
     }
 
-    public function userProfile(Request $request)
+    public function profile(Request $request)
     {
         $user = User::find($request->user_id);
         $user->favoriteTags->load('tag');
