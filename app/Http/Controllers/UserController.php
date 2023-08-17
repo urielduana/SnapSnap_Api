@@ -6,6 +6,7 @@ use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tags;
+use App\Models\Post;
 
 class UserController extends Controller
 {
@@ -91,7 +92,10 @@ class UserController extends Controller
     public function profileTagPost($user_id, $tag_id)
     {
         $tag = Tags::find($tag_id);
-        $post = $tag->posts()->where('user_id', $user_id)->orderBy('created_at', 'desc')->all();
+
+        $post = Post::where('user_id', $user_id)
+            ->where('tag_id', $tag_id)
+            ->get();
 
         return response()->json($tag, $post);
     }
