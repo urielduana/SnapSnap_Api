@@ -71,3 +71,5 @@ Route::middleware('auth:sanctum')->post('posts/{post}/like', [PostController::cl
 Route::get('posts/{post}/comments', [CommentController::class, 'index']);
 // Ruta para crear un comentario
 Route::middleware('auth:sanctum')->post('posts/{post}/comments', [CommentController::class, 'store']);
+// Ruta para obtener los tags favoritos de un usuario
+Route::middleware('auth:sanctum')->get('users/{user}/tags', [FavoriteTagController::class, 'index']);
