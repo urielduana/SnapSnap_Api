@@ -50,7 +50,8 @@ Route::middleware('auth:sanctum')->post('users/follow', [UserController::class, 
 Route::middleware('auth:sanctum')->post('users/unfollow', [UserController::class, 'unFollowUser']);
 
 // Profile
-Route::middleware('auth:sanctum')->post('profile', [UserController::class, 'profile']);
+Route::middleware('auth:sanctum')->get('profile/{user_id}', [UserController::class, 'profile']);
+
 
 
 // Test
