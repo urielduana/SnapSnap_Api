@@ -78,14 +78,11 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         $user = User::find($request->user_id);
-
-        $user->favoriteTags->load(['tag.tagPost', 'tag.tagPost' => function ($query) {
-            $query->orderBy('created_at', 'desc')->first();
-        }]);
-
         $user->followers_count = $user->followers->count();
 
-        $user->load('likedPosts', 'posts');
+        $user->load(['favoriteTags.tag.posts' => function ($query) {
+            $query->orderBy('created_at', 'desc')->first();
+        }]);
 
         return response()->json($user);
     }
