@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->post('users/unfollow', [UserController::class
 
 // Profile
 Route::middleware('auth:sanctum')->get('profile/{user_id}', [UserController::class, 'profile']);
+Route::middleware('auth:sanctum')->post('profile/posts/{user_id}/{tag_id}', [UserController::class, 'profileTagPost']);
 
 
 
