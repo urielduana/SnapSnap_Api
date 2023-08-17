@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Tags;
 
 class UserController extends Controller
 {
@@ -75,9 +76,9 @@ class UserController extends Controller
         return response()->json($follower);
     }
 
-    public function profile(Request $request)
+    public function profile($user_id)
     {
-        $user = User::find($request->user_id);
+        $user = User::find($user_id);
         $user->followers_count = $user->followers->count();
 
         $user->load(['favoriteTags.tag.posts' => function ($query) {
@@ -85,5 +86,13 @@ class UserController extends Controller
         }]);
 
         return response()->json($user);
+    }
+
+    public function profileTagPost($user_id, $tag_id)
+    {
+        $tag = Tags::find($tag_id);
+        $post = $tag->posts()->where('user_id', $user_id)->orderBy('created_at', 'desc')->first();
+
+        return response()->json($post);
     }
 }
