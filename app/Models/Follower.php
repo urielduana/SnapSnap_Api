@@ -10,7 +10,9 @@ class Follower extends Model
     use HasFactory;
 
     protected $fillable = [
+        // Who follows
         'user_id',
+        // Who is followed
         'follower_id',
     ];
 

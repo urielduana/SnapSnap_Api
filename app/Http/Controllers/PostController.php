@@ -41,70 +41,71 @@ class PostController extends Controller implements HasMedia
      */
 
 
-public function store(Request $request)
-{
-    try {
-        $description = $request->input('description');
-        $tags = explode(',', $request->input('tags'));
-        $images = $request->file('images');
+    public function store(Request $request)
+    {
+        try {
+            $description = $request->input('description');
+            $tags = explode(',', $request->input('tags'));
+            $images = $request->file('images');
 
-        // Validar que el usuario esté autenticado
-        $user = Auth::user();
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no autenticado'], 401);
-        }
-
-        // Validar que se hayan enviado imágenes
-        if (!$images) {
-            return response()->json(['error' => 'No se enviaron imágenes válidas.'], 400);
-        }
-
-        $urls = [];
-        $s3 = Storage::disk('s3');
-
-        // Guardar las imágenes en S3 y obtener URLs públicas
-        foreach ($images as $image) {
-            if (!$image->isValid()) {
-                continue;
+            // Validar que el usuario esté autenticado
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['error' => 'Usuario no autenticado'], 401);
             }
 
-            $path = 'posts/' . time() . '_' . $image->getClientOriginalName();
-            $s3->put($path, file_get_contents($image), 'public');
-            $url = $s3->url($path); // Obtener la URL completa de S3
-            $urls[] = $url;
-        }
-
-        // Crear el post
-        $post = new Post();
-	$post->user_id = $user->id;
-	$post->url = $urls[0];
-        $post->description = $description;
-        // Falta arreglar esto de los múltiples tags
-        $post->tag_id = $tags[0];
-        $post->save();
-
-        // Guardar las imágenes utilizando Laravel-MediaLibrary
-        foreach ($images as $image) {
-            if (!$image->isValid()) {
-                continue;
+            // Validar que se hayan enviado imágenes
+            if (!$images) {
+                return response()->json(['error' => 'No se enviaron imágenes válidas.'], 400);
             }
 
-            $media = $post->addMedia($image)
-                          ->toMediaCollection('posts');
+            $urls = [];
+            $s3 = Storage::disk('s3');
 
-            $urls[] = $media->getFullUrl();
+            // Guardar las imágenes en S3 y obtener URLs públicas
+            foreach ($images as $image) {
+                if (!$image->isValid()) {
+                    continue;
+                }
+
+                $path = 'posts/' . time() . '_' . $image->getClientOriginalName();
+                $s3->put($path, file_get_contents($image), 'public');
+                $url = $s3->url($path); // Obtener la URL completa de S3
+                $urls[] = $url;
+            }
+
+            // Crear el post
+            $post = new Post();
+            $post->user_id = $user->id;
+            $post->url = $urls[0];
+            $post->description = $description;
+            // Falta arreglar esto de los múltiples tags
+            $post->tag_id = $tags[0];
+            $post->save();
+
+            // Guardar las imágenes utilizando Laravel-MediaLibrary
+            foreach ($images as $image) {
+                if (!$image->isValid()) {
+                    continue;
+                }
+
+                $media = $post->addMedia($image)
+                    ->toMediaCollection('posts');
+
+                $urls[] = $media->getFullUrl();
+            }
+
+            return response()->json(['urls' => $urls, 'user' => $user, 'description' => $description, 'tags' => $tags], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al procesar las imágenes.'], 500);
         }
-
-        return response()->json(['urls' => $urls, 'user' => $user, 'description' => $description, 'tags' => $tags], 200);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error al procesar las imágenes.'], 500);
     }
-}
 
 
 
- public function avatar(Request $request){
-          try {
+    public function avatar(Request $request)
+    {
+        try {
             $folder = 'avatar';
 
             $image_url = Storage::disk('s3')->put($folder, $request->image, 'public');
@@ -137,73 +138,78 @@ public function store(Request $request)
 
 
 
-public function feed()
-{
-    try {
-        // Usuario autenticado
+    public function feed()
+    {
+        try {
+            // Usuario autenticado
+            $auth = Auth::user();
+            $user = User::find($auth->id);
+
+            //$favoriteTagIds = $user->favoriteTags()->pluck('tag_id')->toArray();
+            $favoriteTagIds = $user->favoriteTags()->pluck('tag_id')->toArray();
+
+            $posts = Post::whereIn('tag_id', $favoriteTagIds)
+                ->orderBy('id', 'desc')
+                ->with(['user', 'tagPost', 'likes', 'comments'])
+                ->get();
+
+            $likedPostIds = $user->likedPosts->pluck('id')->toArray();
+
+            $tagNames = Tags::whereIn('id', $favoriteTagIds)
+                ->pluck('tag_name', 'id')
+                ->toArray();
+
+            $transformedPosts = $posts->map(function ($post) use ($tagNames, $likedPostIds) {
+                return [
+                    'id' => $post->id,
+                    'url' => $post->url,
+                    'description' => $post->description,
+                    'created_at' => $post->created_at,
+                    'user_id' => $post->user_id,
+                    'username' => $post->user->username,
+                    'tag_name' => isset($tagNames[$post->tag_id]) ? $tagNames[$post->tag_id] : null,
+                    'likes' => $post->likes->count(),
+                    'liked' => in_array($post->id, $likedPostIds),
+                    'comments' => $post->comments->map(function ($comment) {
+                        return [
+                            'id' => $comment->id,
+                            'text' => $comment->comment,
+                            'created_at' => $comment->created_at,
+                        ];
+                    }),
+                ];
+            });
+
+            return response()->json(
+                $transformedPosts
+            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener los posts'
+            ], 500);
+        }
+    }
+
+
+    public function toggleLike(Post $post, Request $request)
+    {
         $auth = Auth::user();
-        $user = User::find($auth->id);
+        $userId = $auth->id;
 
-        $favoriteTagIds = $user->favoriteTags()->pluck('tag_id')->toArray();
+        if ($post->likedByUser($userId)) {
+            $post->removeLike($userId);
+            $liked = false;
+        } else {
+            $post->addLike($userId);
+            $liked = true;
+        }
 
-        $posts = Post::whereIn('tag_id', $favoriteTagIds)
-            ->orderBy('id', 'desc')
-            ->with(['user', 'tagPost'])
-            ->get();
-
-        $tagNames = Tags::whereIn('id', $favoriteTagIds)
-            ->pluck('tag_name', 'id')
-            ->toArray();
-
-        $transformedPosts = $posts->map(function ($post) use ($tagNames) {
-            return [
-                'id' => $post->id,
-                'url' => $post->url,
-                'description' => $post->description,
-                'created_at' => $post->created_at,
-                'user_id' => $post->user_id,
-		'username' => $post->user->username,
-
-                'tag_name' => isset($tagNames[$post->tag_id]) ? $tagNames[$post->tag_id] : null,
-            ];
-        });
-
-        return response()->json(
-            $transformedPosts
-        );
-    } catch (\Exception $e) {
         return response()->json([
-            'message' => 'Error al obtener los posts'
-        ], 500);
-    }
-}
-
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Post $post)
-    {
-        //
+            'liked' => $liked,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Post $post)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
