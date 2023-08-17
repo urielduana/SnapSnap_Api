@@ -91,8 +91,8 @@ class UserController extends Controller
     public function profileTagPost($user_id, $tag_id)
     {
         $tag = Tags::find($tag_id);
-        $post = $tag->posts()->where('user_id', $user_id)->orderBy('created_at', 'desc');
+        $post = $tag->posts()->where('user_id', $user_id)->orderBy('created_at', 'desc')->all();
 
-        return response()->json($post);
+        return response()->json($tag, $post);
     }
 }
