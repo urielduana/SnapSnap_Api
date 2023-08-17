@@ -58,13 +58,11 @@ class Post extends Model implements HasMedia
         $this->addMediaCollection('posts');
     }
 
-    // Método para verificar si un usuario le dio like al post
     public function likedByUser($userId)
     {
         return $this->likes()->where('user_like_id', $userId)->exists();
     }
 
-    // Método para agregar un like al post
     public function addLike($userId)
     {
         $this->likes()->create([
@@ -72,7 +70,6 @@ class Post extends Model implements HasMedia
         ]);
     }
 
-    // Método para quitar un like del post
     public function removeLike($userId)
     {
         $this->likes()->where('user_like_id', $userId)->delete();
