@@ -81,6 +81,7 @@ class UserController extends Controller
     {
         $user = User::find($user_id);
         $user->followers_count = $user->followers->count();
+        $user->following_count = $user->following->count();
 
         $user->load(['favoriteTags.tag.posts' => function ($query) {
             $query->orderBy('created_at', 'desc')->first();
