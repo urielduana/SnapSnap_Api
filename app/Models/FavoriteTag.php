@@ -21,7 +21,7 @@ class FavoriteTag extends Model
 
     public function tagFavoriteTag()
     {
-        return $this->belongsTo(Tag::class);
+        return $this->belongsTo(Tags::class);
     }
 
     public function user()
@@ -31,6 +31,6 @@ class FavoriteTag extends Model
 
     public function tag()
     {
-        return $this->belongsTo(Tag::class);
+        return $this->belongsTo(Tags::class);
     }
 }
