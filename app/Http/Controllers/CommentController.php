@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use App\Models\Post;
 
 class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $post = Post::find($id);
+        $comments = $post->comments->load('userComment');
+        return response()->json($comments);
     }
 
     /**
